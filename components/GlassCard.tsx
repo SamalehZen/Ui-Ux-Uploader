@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { CustomFileIcon } from './CustomIcon';
 import { analyzeFileContent } from '../services/geminiService';
 
@@ -36,9 +36,8 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
     setGeminiSummary(null);
     onStatusChange("Uploading...");
 
-    // Simulate upload progress
-    const duration = 2000; // 2 seconds
-    const interval = 20;
+    const duration = 2500;
+    const interval = 25;
     const steps = duration / interval;
     let currentStep = 0;
 
@@ -58,15 +57,14 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
 
   const handleAnalysis = async (uploadedFile: File) => {
     if (uploadedFile.type === "text/plain") {
-      onStatusChange("Analyzing with Gemini...");
+      onStatusChange("Analyzing...");
       const text = await uploadedFile.text();
       const summary = await analyzeFileContent(text);
       setGeminiSummary(summary);
       onStatusChange("Done");
     } else {
-       // Mock analysis for non-text files for demo purposes
        setTimeout(() => {
-         setGeminiSummary("File uploaded successfully. (Gemini analysis available for .txt files)");
+         setGeminiSummary("Upload complete. Gemini analysis is optimized for text files.");
          onStatusChange("Done");
        }, 500);
     }
@@ -81,24 +79,25 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
     onStatusChange("Idle");
   };
 
-  // Calculate opacity for the 'Uploading' text vs 'Completed'
-  const isDone = progress === 100;
-
   return (
     <div 
       onClick={handleCardClick}
       className={`
-        relative w-[480px] h-[340px] rounded-3xl
-        bg-gradient-to-b from-white/10 to-transparent
-        border border-white/10
+        relative w-[520px] h-[340px] rounded-[32px]
+        bg-[#111827]/40 
         backdrop-blur-2xl
-        shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]
-        flex flex-col items-center justify-between
-        p-8 overflow-hidden
+        border border-white/10
+        shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.15)]
+        flex flex-col
+        p-10
         transition-all duration-500 group
-        ${!file ? 'cursor-pointer hover:border-white/20 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]' : ''}
+        ${!file ? 'cursor-pointer hover:bg-[#111827]/50 hover:border-white/15 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)]' : ''}
       `}
     >
+      {/* Top Inner Shadow Highlight - Enhanced */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"></div>
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-black/30 to-transparent opacity-50"></div>
+
       <input 
         type="file" 
         ref={fileInputRef} 
@@ -107,80 +106,88 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
       />
 
       {/* Close Button */}
-      <div className="absolute top-5 right-5 z-20">
+      <div className="absolute top-6 right-6 z-20">
         <button 
           onClick={file ? reset : undefined}
-          className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 flex items-center justify-center transition-colors"
+          className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 flex items-center justify-center transition-all duration-300 group-hover:scale-110"
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M1 1L9 9M9 1L1 9" className="text-gray-400" />
+            <path d="M1 1L9 9M9 1L1 9" className="text-gray-400 group-hover:text-white" />
           </svg>
         </button>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full z-10 space-y-2 mt-4">
-        {/* Icon & Details */}
-        <div className="flex items-center space-x-6 w-full px-4">
-          <div className="transition-transform duration-500 transform group-hover:scale-105">
+      {/* Content Container */}
+      <div className="flex-1 flex flex-col justify-between z-10">
+        
+        {/* Top Section: Icon & Metadata */}
+        <div className="flex items-center space-x-8 pt-4">
+          <div className="transition-transform duration-500 transform group-hover:scale-105 group-hover:-rotate-2">
             <CustomFileIcon />
           </div>
           
-          <div className="flex flex-col items-start space-y-1">
-            <h2 className="text-2xl font-normal tracking-tight text-white">
+          <div className="flex flex-col space-y-2 max-w-[220px]">
+            <h2 className="text-3xl font-medium tracking-tight text-white/95 leading-tight">
               {file ? (file.name.length > 18 ? file.name.substring(0,15) + '...' : file.name) : defaultFileName}
             </h2>
-            <p className="text-gray-400 text-sm font-light">
+            <p className="text-gray-400 text-base font-light tracking-wide">
                {file ? `${(file.size / 1024).toFixed(2)} KB` : defaultFileSize}
             </p>
             
             {geminiSummary && (
-               <div className="mt-2 text-xs text-blue-200/80 max-w-[200px] max-h-[60px] overflow-y-auto leading-relaxed pr-2">
+               <div className="mt-1 text-xs text-blue-300/90 leading-relaxed line-clamp-2 animate-pulse">
                  {geminiSummary}
                </div>
             )}
           </div>
         </div>
-      </div>
 
-      {/* Progress Section */}
-      <div className="w-full space-y-3 z-10 mt-4">
-        <div className="flex justify-between items-center text-lg font-light tracking-wide">
-          <div className="flex items-center space-x-3">
-             {/* Spinner for Uploading state */}
-             {isUploading && (
-               <svg className="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-               </svg>
-             )}
-             {!isUploading && progress === 0 && (
-                 <span className="text-gray-400 text-base">Click to upload</span>
-             )}
-             {(isUploading || progress > 0) && (
-                <span className="text-gray-300">
-                    {progress === 100 ? (geminiSummary ? "Analyzed" : "Completed") : "Uploading ..."}
-                </span>
-             )}
+        {/* Bottom Section: Progress Bar */}
+        <div className="w-full space-y-4 pb-2">
+          
+          {/* Status Text Row */}
+          <div className="flex justify-between items-end">
+            <div className="flex items-center space-x-3 text-lg text-gray-300 font-light">
+               {isUploading && (
+                 <div className="relative w-5 h-5">
+                   <div className="absolute inset-0 border-2 border-t-white border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                   <div className="absolute inset-0 border-2 border-white/10 rounded-full"></div>
+                 </div>
+               )}
+               <span className="tracking-wide">
+                 {!isUploading && progress === 0 ? "Click to upload" : (isUploading ? "Uploading ..." : (geminiSummary ? "Analyzed" : "Completed"))}
+               </span>
+            </div>
+            
+            <span className="text-4xl font-extralight text-white tracking-tight">
+              {progress} %
+            </span>
           </div>
-          <span className="text-3xl font-light tabular-nums">{progress} %</span>
-        </div>
 
-        {/* Progress Bar Container */}
-        <div className="h-2 w-full bg-gray-700/30 rounded-full overflow-hidden backdrop-blur-sm">
-          {/* Active Bar with Glow */}
-          <div 
-            className="h-full bg-white rounded-full relative shadow-[0_0_15px_rgba(255,255,255,0.7)] transition-all duration-100 ease-out"
-            style={{ width: `${progress}%` }}
-          >
-             {/* Leading edge light */}
-             <div className="absolute right-0 top-0 bottom-0 w-2 bg-white shadow-[0_0_20px_5px_rgba(255,255,255,0.8)] rounded-full"></div>
+          {/* Progress Track */}
+          <div className="h-1.5 w-full bg-[#0B111D] rounded-full overflow-visible relative">
+            {/* Active Bar */}
+            <div 
+              className="h-full bg-gradient-to-r from-blue-500 via-blue-400 to-white rounded-full relative transition-all duration-200 ease-out"
+              style={{ width: `${progress}%` }}
+            >
+               {/* The "Spark" / Lens Flare at the tip */}
+               {progress > 0 && progress < 100 && (
+                 <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 z-10">
+                   <div className="w-4 h-4 bg-white rounded-full blur-[6px]"></div>
+                   <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,1)]"></div>
+                 </div>
+               )}
+            </div>
+            
+            {/* Glow under the bar */}
+             <div 
+              className="absolute top-0 left-0 h-full bg-blue-500/50 blur-[6px] rounded-full transition-all duration-200"
+              style={{ width: `${progress}%` }}
+             ></div>
           </div>
         </div>
       </div>
-      
-      {/* Background Gradient Mesh (Optional subtle internal glow) */}
-      <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
     </div>
   );
 };
