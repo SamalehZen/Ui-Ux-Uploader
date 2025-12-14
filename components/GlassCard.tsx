@@ -84,19 +84,31 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
       onClick={handleCardClick}
       className={`
         relative w-[520px] h-[340px] rounded-[32px]
-        bg-[#111827]/40 
-        backdrop-blur-2xl
+        bg-[#050B14]/30
+        backdrop-blur-[40px]
         border border-white/10
-        shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.15)]
+        shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5),inset_0_0_0_1px_rgba(255,255,255,0.05)]
         flex flex-col
         p-10
+        overflow-hidden
         transition-all duration-500 group
-        ${!file ? 'cursor-pointer hover:bg-[#111827]/50 hover:border-white/15 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)]' : ''}
+        ${!file ? 'cursor-pointer hover:bg-[#050B14]/40 hover:border-white/15' : ''}
       `}
     >
-      {/* Top Inner Shadow Highlight - Enhanced */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"></div>
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-black/30 to-transparent opacity-50"></div>
+      {/* Dot Matrix Pattern Overlay */}
+      <div 
+        className="absolute inset-0 opacity-20 pointer-events-none"
+        style={{
+          backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
+          backgroundSize: '24px 24px'
+        }}
+      ></div>
+
+      {/* Top Inner Highlight */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+      
+      {/* Bottom Light Bleed (Simulating light coming from below) */}
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-blue-500/10 to-transparent pointer-events-none"></div>
 
       <input 
         type="file" 
@@ -118,7 +130,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
       </div>
 
       {/* Content Container */}
-      <div className="flex-1 flex flex-col justify-between z-10">
+      <div className="flex-1 flex flex-col justify-between z-10 relative">
         
         {/* Top Section: Icon & Metadata */}
         <div className="flex items-center space-x-8 pt-4">
@@ -165,10 +177,10 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
           </div>
 
           {/* Progress Track */}
-          <div className="h-1.5 w-full bg-[#0B111D] rounded-full overflow-visible relative">
+          <div className="h-1.5 w-full bg-[#0B111D]/50 rounded-full overflow-visible relative backdrop-blur-sm">
             {/* Active Bar */}
             <div 
-              className="h-full bg-gradient-to-r from-blue-500 via-blue-400 to-white rounded-full relative transition-all duration-200 ease-out"
+              className="h-full bg-gradient-to-r from-blue-600 via-blue-400 to-white rounded-full relative transition-all duration-200 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]"
               style={{ width: `${progress}%` }}
             >
                {/* The "Spark" / Lens Flare at the tip */}
@@ -179,12 +191,6 @@ export const GlassCard: React.FC<GlassCardProps> = ({ onStatusChange }) => {
                  </div>
                )}
             </div>
-            
-            {/* Glow under the bar */}
-             <div 
-              className="absolute top-0 left-0 h-full bg-blue-500/50 blur-[6px] rounded-full transition-all duration-200"
-              style={{ width: `${progress}%` }}
-             ></div>
           </div>
         </div>
       </div>

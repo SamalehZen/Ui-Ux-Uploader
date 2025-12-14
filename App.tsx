@@ -11,21 +11,26 @@ const App: React.FC = () => {
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
          
          {/* 1. The Planet Body (The dark mass at the bottom) */}
-         {/* positioned to create a convex curve. Matches bg color to mask the glow behind it, creating the sharp edge. */}
-         <div className="absolute top-[55%] left-1/2 -translate-x-1/2 w-[170vw] h-[170vw] rounded-full bg-[#050B14] z-10 shadow-[0_-10px_100px_rgba(0,0,0,0.8)]">
-            {/* The sharp rim light (The Horizon Line) */}
-            <div className="absolute inset-0 rounded-full border-t-[2px] border-blue-400/50 opacity-100 shadow-[0_-4px_20px_rgba(59,130,246,0.6)]"></div>
-            {/* A second finer rim for detail */}
-            <div className="absolute inset-0 rounded-full border-t-[1px] border-white/30 opacity-40 mix-blend-overlay"></div>
+         <div className="absolute top-[55%] left-1/2 -translate-x-1/2 w-[160vw] h-[160vw] rounded-full bg-[#050B14] z-10 shadow-[0_-10px_100px_rgba(0,0,0,1)]">
+            
+            {/* The sharp rim light (The Horizon Line) - Bright Electric Blue */}
+            <div className="absolute inset-0 rounded-full border-t-[3px] border-[#60A5FA] opacity-90 shadow-[0_0_50px_rgba(59,130,246,0.8)]"></div>
+            
+            {/* Secondary White Hot Rim */}
+            <div className="absolute inset-0 rounded-full border-t-[1px] border-white opacity-60 mix-blend-overlay blur-[1px]"></div>
          </div>
 
          {/* 2. The Atmosphere Glow (Behind the planet rim) */}
-         {/* This creates the blue aurora effect rising from the horizon */}
-         <div className="absolute top-[52%] left-1/2 -translate-x-1/2 w-[160vw] h-[160vw] bg-blue-600/20 blur-[120px] rounded-full z-0"></div>
-
+         {/* Intense Blue/Cyan Radiance */}
+         <div className="absolute top-[50%] left-1/2 -translate-x-1/2 w-[140vw] h-[140vw] bg-[#2563EB] blur-[100px] rounded-full opacity-40 z-0"></div>
+         
          {/* 3. The Central Highlight (Sun/Core reflection) */}
-         {/* Concentrated glow directly behind the card position */}
-         <div className="absolute top-[54%] left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-blue-500/15 blur-[80px] rounded-full z-10 mix-blend-screen"></div>
+         {/* Vertical light pillar effect */}
+         <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#3B82F6] blur-[120px] rounded-full opacity-30 z-0 mix-blend-screen"></div>
+         
+         {/* Side atmospheric haze for depth */}
+         <div className="absolute top-[55%] left-[10%] w-[800px] h-[300px] bg-[#1d4ed8] blur-[150px] opacity-20"></div>
+         <div className="absolute top-[55%] right-[10%] w-[800px] h-[300px] bg-[#1d4ed8] blur-[150px] opacity-20"></div>
          
       </div>
 
